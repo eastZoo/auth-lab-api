@@ -3,6 +3,7 @@ import {
   HttpException,
   Logger,
   NotAcceptableException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { UserRepository } from './user.repository';
@@ -12,6 +13,7 @@ import { SignupDto } from './dto/signup.dto';
 import { user } from 'src/models';
 import { v1 as uuid } from 'uuid';
 import * as crypto from 'crypto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -27,18 +29,30 @@ export class UserService {
    * @param {string} password 비밀번호
    */
   async login(
-    id: string,
-    password: string,
+    loginDto: LoginDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.authRepository.validateUser(id, password);
-    if (!user) {
-      throw new HttpException(
-        '아이디 또는 비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.',
-        400,
-      );
+    const { id, password } = loginDto;
+
+    const signinData = await user.findOne({
+      where: {
+        id: id,
+      },
+    });
+    // id 존재하는 id 인지 비교
+    if (signinData === null) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
+
+    // 이메일 존재시 비밀번호 비교.
+    if (
+      signinData.password.toString() !==
+      crypto.createHash('sha512').update(password).digest('hex')
+    ) {
+      throw new NotFoundException('비밀번호가 일치하지 않습니다.');
+    }
+
     const payload = {
-      userId: id,
+      id: id,
     };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
@@ -56,8 +70,10 @@ export class UserService {
       const isUser = await user.findOne({ where: { id: signupDto.id } });
       // 위의 조건과 같은 조건이 있다면 중복된 아이디 알림
       if (isUser?.id) {
-        throw new NotAcceptableException();
+        throw new NotAcceptableException('이미 존재하는 아이디입니다.');
       }
+
+      // 비밀번호 암호화
       signupDto.password = crypto
         .createHash('sha512')
         .update(signupDto.password)
@@ -73,7 +89,7 @@ export class UserService {
     } catch (error) {
       Logger.error(error);
       await t.rollback();
-      throw new HttpException('회원가입에 실패 했습니다.', 400);
+      throw new HttpException(error.response.message, 400);
     }
   }
 }
