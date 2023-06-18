@@ -15,7 +15,8 @@ export class UserController {
   async login(
     @Body() loginDto: LoginDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    return await this.userService.login(loginDto);
+    const result = await this.userService.login(loginDto);
+    return result;
   }
 
   @Post('/signup')

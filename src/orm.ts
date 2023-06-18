@@ -4,13 +4,13 @@ dotenv.config();
 import {
   IConfig,
   ModelBuilder,
-  DialectPostgres,
+  DialectMySQL,
 } from 'sequelize-typescript-generator';
 
 (async () => {
   const config: IConfig = {
     connection: {
-      dialect: 'postgres',
+      dialect: 'mysql',
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       database: process.env.DB_NAME,
@@ -29,7 +29,7 @@ import {
     strict: true,
   };
 
-  const dialect = new DialectPostgres();
+  const dialect = new DialectMySQL();
   const builder = new ModelBuilder(config, dialect);
 
   try {

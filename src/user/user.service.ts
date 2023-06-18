@@ -57,7 +57,8 @@ export class UserService {
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
 
-    return { accessToken, refreshToken };
+    console.log(accessToken, refreshToken);
+    return { accessToken: accessToken, refreshToken: refreshToken };
   }
 
   /**
@@ -67,6 +68,7 @@ export class UserService {
   async signup(signupDto: SignupDto) {
     const t = await this.seqeulize.transaction();
     try {
+      console.log(signupDto);
       const isUser = await user.findOne({ where: { id: signupDto.id } });
       // 위의 조건과 같은 조건이 있다면 중복된 아이디 알림
       if (isUser?.id) {

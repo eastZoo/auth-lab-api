@@ -1,5 +1,6 @@
 export class SignupDto {
   oid?: string;
   id?: string;
-  password?: any;
+  password: any;
+  name?: string;
 }

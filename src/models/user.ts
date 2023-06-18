@@ -12,6 +12,7 @@ export interface userAttributes {
   oid: string;
   id?: string;
   password?: Uint8Array;
+  name?: string;
   created_at?: Date;
 }
 
@@ -21,7 +22,7 @@ export class user
   implements userAttributes
 {
   @Column({ primaryKey: true, type: DataType.STRING(100) })
-  @Index({ name: 'user_pkey', using: 'btree', unique: true })
+  @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
   oid!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(100) })
@@ -30,10 +31,9 @@ export class user
   @Column({ allowNull: true, type: DataType.BLOB })
   password?: Uint8Array;
 
-  @Column({
-    allowNull: true,
-    type: DataType.DATE,
-    defaultValue: Sequelize.literal('now()'),
-  })
+  @Column({ allowNull: true, type: DataType.STRING(45) })
+  name?: string;
+
+  @Column({ allowNull: true, type: DataType.DATE, defaultValue: DataType.NOW })
   created_at?: Date;
 }
