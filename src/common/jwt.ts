@@ -2,16 +2,21 @@ import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const ACCESS_TOKEN_EXPIRES = 60 * 5 * 1000;
+const ACCESS_TOKEN_EXPIRES = {
+  expiresIn: '10m',
+};
+const REFRESH_TOKEN_EXPIRES = {
+  expiresIn: '7d',
+};
 
 export const createAccessToken = (payload: any) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: ACCESS_TOKEN_EXPIRES, //토큰 유지 기간
-  });
+  return jwt.sign(payload, process.env.JWT_SECRET, ACCESS_TOKEN_EXPIRES);
 };
 
 export const createRefreshToken = (payload: any) => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: '180d',
-  });
+  return jwt.sign(
+    payload,
+    process.env.JWT_REFRESH_SECRET,
+    REFRESH_TOKEN_EXPIRES,
+  );
 };
