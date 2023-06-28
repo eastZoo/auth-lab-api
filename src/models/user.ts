@@ -10,10 +10,10 @@ import {
 
 export interface userAttributes {
   oid: string;
-  id?: string;
+  userId?: string;
   password?: Uint8Array;
   name?: string;
-  created_at?: Date;
+  createdAt?: Date;
 }
 
 @Table({ tableName: 'user', timestamps: false })
@@ -26,7 +26,8 @@ export class user
   oid!: string;
 
   @Column({ allowNull: true, type: DataType.STRING(100) })
-  id?: string;
+  @Index({ name: 'userId_UNIQUE', using: 'BTREE', order: 'ASC', unique: true })
+  userId?: string;
 
   @Column({ allowNull: true, type: DataType.BLOB })
   password?: Uint8Array;
@@ -34,6 +35,11 @@ export class user
   @Column({ allowNull: true, type: DataType.STRING(45) })
   name?: string;
 
-  @Column({ allowNull: true, type: DataType.DATE, defaultValue: DataType.NOW })
-  created_at?: Date;
+  @Column({
+    field: 'created_at',
+    allowNull: true,
+    type: DataType.DATE,
+    defaultValue: DataType.NOW,
+  })
+  createdAt?: Date;
 }

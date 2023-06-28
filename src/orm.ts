@@ -20,7 +20,7 @@ import {
     },
     metadata: {
       indices: true,
-      case: 'UNDERSCORE',
+      case: 'CAMEL',
     },
     output: {
       clean: true,

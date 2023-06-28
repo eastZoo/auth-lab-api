@@ -35,7 +35,7 @@ export class UserService {
 
     const signinData = await user.findOne({
       where: {
-        id: id,
+        userId: id,
       },
     });
     // id 존재하는 id 인지 비교
@@ -52,7 +52,9 @@ export class UserService {
     }
 
     const payload = {
-      id: id,
+      oid: signinData.oid,
+      userId: signinData.userId,
+      name: signinData.name,
     };
     const accessToken = createAccessToken(payload);
     const refreshToken = createRefreshToken(payload);
@@ -69,7 +71,7 @@ export class UserService {
     const t = await this.seqeulize.transaction();
     try {
       console.log(signupDto);
-      const isUser = await user.findOne({ where: { id: signupDto.id } });
+      const isUser = await user.findOne({ where: { userId: signupDto.id } });
       // 위의 조건과 같은 조건이 있다면 중복된 아이디 알림
       if (isUser?.id) {
         throw new NotAcceptableException('이미 존재하는 아이디입니다.');
