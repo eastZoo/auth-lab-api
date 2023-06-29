@@ -3,10 +3,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const ACCESS_TOKEN_EXPIRES = {
-  expiresIn: '1m',
+  expiresIn: '10s',
 };
 const REFRESH_TOKEN_EXPIRES = {
-  expiresIn: '2m',
+  expiresIn: '2d',
 };
 
 export const createAccessToken = (payload: any) => {

@@ -6,6 +6,7 @@ import { AuthRepository } from './auth.repository';
 import { JwtService } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
+import { UserRepository } from 'src/user/user.repository';
 
 @Module({
   imports: [PassportModule],
@@ -16,6 +17,7 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     AccessTokenStrategy,
     RefreshTokenStrategy,
     AuthRepository,
+    UserRepository,
   ],
   controllers: [AuthController],
 })

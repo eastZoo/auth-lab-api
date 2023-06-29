@@ -40,6 +40,7 @@ export class TodoService {
         where: {
           userId: userId,
         },
+        order: [['created_at', 'desc']],
       });
 
       await t.commit();
